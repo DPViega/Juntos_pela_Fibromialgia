@@ -1,73 +1,117 @@
-# Welcome to your Lovable project
+# Juntos pela Fibromialgia - Site de Conscientização e Apoio
 
-## Project info
+Este projeto é um site informativo e de conscientização dedicado à **Fibromialgia**. Seu objetivo principal é fornecer informações precisas sobre a condição, sintomas, tratamentos e dicas de qualidade de vida, além de oferecer um ponto de apoio e acolhimento para pacientes e familiares.
 
-**URL**: https://lovable.dev/projects/6b366f28-7fed-4f83-8922-f550169d899a
+O projeto é notável por integrar um **Assistente Virtual (Chatbot)** baseado em Inteligência Artificial (Google Gemini) para responder a dúvidas específicas sobre a Fibromialgia com empatia e conhecimento especializado.
 
-## How can I edit this code?
+## 💜 Funcionalidades Principais
 
-There are several ways of editing your application.
+*   **Conteúdo Educativo:** Seções detalhadas sobre o que é a Fibromialgia, diagnóstico, manejo da dor e estratégias de bem-estar.
+*   **Assistente IA (Chatbot):** Um assistente virtual, personificado como "Rodrigo" (especialista em Fibromialgia e Fisioterapia), que utiliza o modelo **Google Gemini** para fornecer respostas informadas e compassivas.
+*   **Filtro de Linguagem:** Implementação de um sistema de detecção e resposta a linguagem inapropriada (profanidade) para manter um ambiente de apoio e respeito.
+*   **Design Responsivo:** Interface moderna e acessível, construída com Shadcn UI e Tailwind CSS.
 
-**Use Lovable**
+## 🚀 Tecnologias Utilizadas
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/6b366f28-7fed-4f83-8922-f550169d899a) and start prompting.
+O projeto foi desenvolvido com um stack moderno de desenvolvimento web:
 
-Changes made via Lovable will be committed automatically to this repo.
+| Categoria | Tecnologia | Versão | Descrição |
+| :--- | :--- | :--- | :--- |
+| **Framework Frontend** | React | ^18.3.1 | Biblioteca JavaScript para construção da interface de usuário. |
+| **Linguagem** | TypeScript | ^5.8.3 | Superset do JavaScript para tipagem estática e código mais robusto. |
+| **Build Tool** | Vite | ^5.4.19 | Ferramenta de build rápida para desenvolvimento frontend. |
+| **Estilização** | Tailwind CSS | ^3.4.17 | Framework CSS utilitário para design rápido e responsivo. |
+| **Componentes UI** | Shadcn UI / Radix UI | Diversas | Coleção de componentes de interface de usuário acessíveis e customizáveis. |
+| **Inteligência Artificial** | Google Gemini | ^1.30.0 | Utilizado para alimentar o Assistente Virtual (Chatbot). |
+| **Roteamento** | React Router DOM | ^6.30.1 | Gerenciamento de rotas da aplicação. |
 
-**Use your preferred IDE**
+## ⚙️ Instalação e Execução
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+Para configurar e executar o projeto localmente, siga os passos abaixo.
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### Pré-requisitos
 
-Follow these steps:
+Certifique-se de ter o **Node.js** (com npm ou yarn) ou **Bun** instalado em sua máquina.
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+### Configuração da API Key
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+O projeto utiliza a API do Google Gemini. Você precisará de uma chave de API para o chatbot funcionar.
 
-# Step 3: Install the necessary dependencies.
-npm i
+1.  Obtenha sua chave de API no [Google AI Studio](https://ai.google.dev/gemini-api/docs/api-key).
+2.  Crie um arquivo `.env` na raiz do projeto.
+3.  Adicione sua chave de API no arquivo `.env` no formato:
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+    ```
+    VITE_GEMINI_API_KEY="SUA_CHAVE_AQUI"
+    ```
+
+### Passos
+
+1.  **Instale as dependências:**
+
+    ```bash
+    npm install
+    # ou
+    yarn install
+    # ou
+    bun install
+    ```
+
+2.  **Execute o projeto em modo de desenvolvimento:**
+
+    O comando de desenvolvimento iniciará o servidor local.
+
+    ```bash
+    npm run dev
+    # ou
+    yarn dev
+    # ou
+    bun run dev
+    ```
+
+    O site estará acessível em `http://localhost:5173` (ou outra porta indicada pelo Vite).
+
+3.  **Construa para produção:**
+
+    Para gerar os arquivos estáticos otimizados para produção, utilize o comando de build.
+
+    ```bash
+    npm run build
+    # ou
+    yarn build
+    # ou
+    bun run build
+    ```
+
+    Os arquivos de produção serão gerados na pasta `dist/`.
+
+## 📂 Estrutura do Projeto
+
+A estrutura de diretórios principal é a seguinte:
+
+```
+ProjetoSite-JuntospelaFibromialgia-mainrar/
+├── public/                 # Arquivos estáticos (imagens, favicon, etc.)
+├── src/
+│   ├── assets/             # Imagens e outros recursos
+│   ├── components/         # Componentes React reutilizáveis
+│   │   └── ui/             # Componentes Shadcn UI
+│   ├── hooks/              # Hooks customizados
+│   ├── lib/                # Funções utilitárias (incluindo a integração com Gemini)
+│   ├── pages/              # Componentes de página (Index.tsx, NotFound.tsx)
+│   ├── App.tsx             # Componente principal da aplicação
+│   └── main.tsx            # Ponto de entrada da aplicação
+├── index.html              # Arquivo HTML principal
+├── package.json            # Dependências e scripts
+├── tailwind.config.ts      # Configuração do Tailwind CSS
+└── vite.config.ts          # Configuração do Vite
 ```
 
-**Edit a file directly in GitHub**
+## 📝 Licença
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+Este projeto está sob a licença **MIT** (ou outra licença padrão para projetos de código aberto).
 
-**Use GitHub Codespaces**
+---
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/6b366f28-7fed-4f83-8922-f550169d899a) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+**Desenvolvido por:** Manus AI (com base na análise do código-fonte)
+**Em homenagem a:** Priscila Veiga (conforme metadados do `index.html`)

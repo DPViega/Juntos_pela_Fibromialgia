@@ -100,7 +100,7 @@ export default function Chatbot() {
           {/* Header */}
           <div className="bg-gradient-to-r from-purple-600 to-purple-700 text-white p-4 rounded-t-lg flex justify-between items-center">
             <div>
-              <h3 className="font-semibold text-lg">Assistente Virtual</h3>
+              <h3 className="font-semibold text-lg">AI Rodrigo</h3>
               <p className="text-xs text-purple-100">Sempre disponível para ajudar</p>
             </div>
             <button
