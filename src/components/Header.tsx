@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import FibromyalgiaRibbon from "./FibromyalgiaRibbon";
+import ThemeToggle from "./ThemeToggle";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import heroSlide1 from "@/assets/hero-slide-1.jpg";
 import heroSlide2 from "@/assets/hero-slide-2.jpg";
@@ -50,6 +51,11 @@ const Header = () => {
           <h1 className="text-lg md:text-xl font-semibold text-foreground">Fibromialgia</h1>
           <p className="text-xs text-muted-foreground hidden sm:block">Conscientização e Apoio</p>
         </div>
+      </div>
+
+      {/* Theme Toggle */}
+      <div className="absolute top-4 right-4 z-20">
+        <ThemeToggle />
       </div>
 
       {/* Carousel */}
