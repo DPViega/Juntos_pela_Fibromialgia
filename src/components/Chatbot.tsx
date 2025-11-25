@@ -55,6 +55,13 @@ export default function Chatbot() {
         timestamp: new Date()
       };
       setMessages(prev => [...prev, botResponse]);
+      
+      // Encerrar conversa se houver indicação
+      if (botResponseText.includes('[CONVERSA ENCERRADA]')) {
+        setTimeout(() => {
+          setIsOpen(false);
+        }, 3000);
+      }
     } catch (error) {
       console.error('Erro ao enviar mensagem:', error);
       const errorMessage: Message = {
