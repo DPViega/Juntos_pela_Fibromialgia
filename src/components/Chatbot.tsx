@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { MessageCircle, X, Send } from 'lucide-react';
+import { chatWithGemini } from '@/lib/gemini';
 
 interface Message {
   id: string;
@@ -8,26 +9,12 @@ interface Message {
   timestamp: Date;
 }
 
-const botResponses: { [key: string]: string } = {
-  'olá': 'Olá! Bem-vindo ao site sobre Fibromialgia. Como posso ajudá-lo hoje? 😊',
-  'oi': 'Oi! Estou aqui para responder suas dúvidas sobre fibromialgia. O que gostaria de saber?',
-  'o que é fibromialgia': 'Fibromialgia é uma síndrome crônica caracterizada por dor muscular generalizada, fadiga, distúrbios do sono e problemas cognitivos. Afeta principalmente mulheres e é uma condição de longa duração.',
-  'sintomas': 'Os principais sintomas da fibromialgia incluem: dor muscular generalizada, fadiga extrema, problemas com sono, dificuldade de concentração (névoa mental), ansiedade e depressão. Cada pessoa pode ter sintomas diferentes.',
-  'tratamento': 'O tratamento da fibromialgia geralmente envolve: medicamentos, terapia física, exercícios regulares, gestão do stress e ajustes no estilo de vida. É importante trabalhar com profissionais de saúde especializados.',
-  'como viver com fibromialgia': 'Viver bem com fibromialgia envolve: manter rotina regular, fazer exercícios leves, dormir bem, gerenciar o stress, alimentação saudável e buscar apoio emocional. Cada pessoa encontra seu próprio caminho.',
-  'recursos': 'Temos várias seções no site: informações sobre sintomas, dicas para viver melhor, recursos de apoio e contato. Visite as diferentes abas para mais informações!',
-  'contato': 'Você pode entrar em contato conosco através da seção de contato no site. Estamos aqui para ajudar e apoiar você!',
-  'apoio': 'Sabemos que conviver com fibromialgia é desafiador. Oferecemos informações, comunidade e recursos para ajudá-lo nesta jornada. Nunca está sozinho!',
-  'ajuda': 'Claro! Posso ajudá-lo com informações sobre fibromialgia, sintomas, tratamentos, dicas de estilo de vida e muito mais. O que gostaria de saber?',
-  'padrão': 'Obrigado pela sua pergunta! Para respostas mais específicas, visite as seções do nosso site ou entre em contato conosco. Como posso ajudar?'
-};
-
 export default function Chatbot() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      text: 'Olá! Bem-vindo ao site sobre Fibromialgia. Como posso ajudá-lo?',
+      text: 'Olá! Bem-vindo ao site sobre Fibromialgia. Sou um assistente de IA aqui para responder suas perguntas sobre fibromialgia, sintomas, tratamentos e como viver melhor com esta condição. Como posso ajudá-lo?',
       sender: 'bot',
       timestamp: new Date()
     }
@@ -44,18 +31,6 @@ export default function Chatbot() {
     scrollToBottom();
   }, [messages]);
 
-  const getBotResponse = (userMessage: string): string => {
-    const lowerMessage = userMessage.toLowerCase();
-    
-    for (const [key, response] of Object.entries(botResponses)) {
-      if (lowerMessage.includes(key)) {
-        return response;
-      }
-    }
-    
-    return botResponses['padrão'];
-  };
-
   const handleSendMessage = async () => {
     if (!input.trim()) return;
 
@@ -67,19 +42,31 @@ export default function Chatbot() {
     };
 
     setMessages(prev => [...prev, userMessage]);
+    const userInput = input;
     setInput('');
     setIsLoading(true);
 
-    setTimeout(() => {
+    try {
+      const botResponseText = await chatWithGemini(userInput);
       const botResponse: Message = {
         id: (Date.now() + 1).toString(),
-        text: getBotResponse(input),
+        text: botResponseText,
         sender: 'bot',
         timestamp: new Date()
       };
       setMessages(prev => [...prev, botResponse]);
+    } catch (error) {
+      console.error('Erro ao enviar mensagem:', error);
+      const errorMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        text: 'Desculpe, houve um erro ao processar sua pergunta. Por favor, tente novamente.',
+        sender: 'bot',
+        timestamp: new Date()
+      };
+      setMessages(prev => [...prev, errorMessage]);
+    } finally {
       setIsLoading(false);
-    }, 500);
+    }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
