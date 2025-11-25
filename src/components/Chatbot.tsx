@@ -1,0 +1,179 @@
+import { useState, useRef, useEffect } from 'react';
+import { MessageCircle, X, Send } from 'lucide-react';
+
+interface Message {
+  id: string;
+  text: string;
+  sender: 'user' | 'bot';
+  timestamp: Date;
+}
+
+const botResponses: { [key: string]: string } = {
+  'olá': 'Olá! Bem-vindo ao site sobre Fibromialgia. Como posso ajudá-lo hoje? 😊',
+  'oi': 'Oi! Estou aqui para responder suas dúvidas sobre fibromialgia. O que gostaria de saber?',
+  'o que é fibromialgia': 'Fibromialgia é uma síndrome crônica caracterizada por dor muscular generalizada, fadiga, distúrbios do sono e problemas cognitivos. Afeta principalmente mulheres e é uma condição de longa duração.',
+  'sintomas': 'Os principais sintomas da fibromialgia incluem: dor muscular generalizada, fadiga extrema, problemas com sono, dificuldade de concentração (névoa mental), ansiedade e depressão. Cada pessoa pode ter sintomas diferentes.',
+  'tratamento': 'O tratamento da fibromialgia geralmente envolve: medicamentos, terapia física, exercícios regulares, gestão do stress e ajustes no estilo de vida. É importante trabalhar com profissionais de saúde especializados.',
+  'como viver com fibromialgia': 'Viver bem com fibromialgia envolve: manter rotina regular, fazer exercícios leves, dormir bem, gerenciar o stress, alimentação saudável e buscar apoio emocional. Cada pessoa encontra seu próprio caminho.',
+  'recursos': 'Temos várias seções no site: informações sobre sintomas, dicas para viver melhor, recursos de apoio e contato. Visite as diferentes abas para mais informações!',
+  'contato': 'Você pode entrar em contato conosco através da seção de contato no site. Estamos aqui para ajudar e apoiar você!',
+  'apoio': 'Sabemos que conviver com fibromialgia é desafiador. Oferecemos informações, comunidade e recursos para ajudá-lo nesta jornada. Nunca está sozinho!',
+  'ajuda': 'Claro! Posso ajudá-lo com informações sobre fibromialgia, sintomas, tratamentos, dicas de estilo de vida e muito mais. O que gostaria de saber?',
+  'padrão': 'Obrigado pela sua pergunta! Para respostas mais específicas, visite as seções do nosso site ou entre em contato conosco. Como posso ajudar?'
+};
+
+export default function Chatbot() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [messages, setMessages] = useState<Message[]>([
+    {
+      id: '1',
+      text: 'Olá! Bem-vindo ao site sobre Fibromialgia. Como posso ajudá-lo?',
+      sender: 'bot',
+      timestamp: new Date()
+    }
+  ]);
+  const [input, setInput] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  const getBotResponse = (userMessage: string): string => {
+    const lowerMessage = userMessage.toLowerCase();
+    
+    for (const [key, response] of Object.entries(botResponses)) {
+      if (lowerMessage.includes(key)) {
+        return response;
+      }
+    }
+    
+    return botResponses['padrão'];
+  };
+
+  const handleSendMessage = async () => {
+    if (!input.trim()) return;
+
+    const userMessage: Message = {
+      id: Date.now().toString(),
+      text: input,
+      sender: 'user',
+      timestamp: new Date()
+    };
+
+    setMessages(prev => [...prev, userMessage]);
+    setInput('');
+    setIsLoading(true);
+
+    setTimeout(() => {
+      const botResponse: Message = {
+        id: (Date.now() + 1).toString(),
+        text: getBotResponse(input),
+        sender: 'bot',
+        timestamp: new Date()
+      };
+      setMessages(prev => [...prev, botResponse]);
+      setIsLoading(false);
+    }, 500);
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSendMessage();
+    }
+  };
+
+  return (
+    <>
+      {!isOpen && (
+        <button
+          onClick={() => setIsOpen(true)}
+          className="fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-full shadow-lg hover:shadow-xl transition-all hover:scale-110 flex items-center justify-center z-40"
+          aria-label="Abrir chat"
+        >
+          <MessageCircle size={24} />
+        </button>
+      )}
+
+      {isOpen && (
+        <div className="fixed bottom-6 right-6 w-96 h-96 bg-white rounded-lg shadow-2xl flex flex-col z-50 border border-gray-200">
+          {/* Header */}
+          <div className="bg-gradient-to-r from-purple-600 to-purple-700 text-white p-4 rounded-t-lg flex justify-between items-center">
+            <div>
+              <h3 className="font-semibold text-lg">Assistente Virtual</h3>
+              <p className="text-xs text-purple-100">Sempre disponível para ajudar</p>
+            </div>
+            <button
+              onClick={() => setIsOpen(false)}
+              className="hover:bg-purple-800 p-1 rounded transition"
+              aria-label="Fechar chat"
+            >
+              <X size={20} />
+            </button>
+          </div>
+
+          {/* Messages */}
+          <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
+            {messages.map((message) => (
+              <div
+                key={message.id}
+                className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+              >
+                <div
+                  className={`max-w-xs px-4 py-2 rounded-lg ${
+                    message.sender === 'user'
+                      ? 'bg-purple-600 text-white rounded-br-none'
+                      : 'bg-gray-200 text-gray-800 rounded-bl-none'
+                  }`}
+                >
+                  <p className="text-sm">{message.text}</p>
+                  <span className="text-xs opacity-70 mt-1 block">
+                    {message.timestamp.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+                  </span>
+                </div>
+              </div>
+            ))}
+            {isLoading && (
+              <div className="flex justify-start">
+                <div className="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg rounded-bl-none">
+                  <div className="flex space-x-2">
+                    <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce"></div>
+                    <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce delay-100"></div>
+                    <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce delay-200"></div>
+                  </div>
+                </div>
+              </div>
+            )}
+            <div ref={messagesEndRef} />
+          </div>
+
+          {/* Input */}
+          <div className="border-t p-4 bg-white rounded-b-lg flex gap-2">
+            <input
+              type="text"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyPress={handleKeyPress}
+              placeholder="Digite sua mensagem..."
+              className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+            />
+            <button
+              onClick={handleSendMessage}
+              disabled={isLoading || !input.trim()}
+              className="bg-purple-600 text-white p-2 rounded-lg hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition"
+              aria-label="Enviar mensagem"
+            >
+              <Send size={18} />
+            </button>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
