@@ -1,9 +1,31 @@
-import { useState } from "react";
-import { Menu, X } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Menu, X, Moon, Sun } from "lucide-react";
 import FibromyalgiaRibbon from "./FibromyalgiaRibbon";
 
 const MobileNav = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isDark, setIsDark] = useState(false);
+
+  useEffect(() => {
+    const isDarkMode = localStorage.getItem('theme') === 'dark' || 
+      (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    setIsDark(isDarkMode);
+    if (isDarkMode) {
+      document.documentElement.classList.add('dark');
+    }
+  }, []);
+
+  const toggleTheme = () => {
+    const newIsDark = !isDark;
+    setIsDark(newIsDark);
+    localStorage.setItem('theme', newIsDark ? 'dark' : 'light');
+    
+    if (newIsDark) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  };
 
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
@@ -70,12 +92,23 @@ const MobileNav = () => {
             ))}
           </ul>
 
-          <div className="mt-8 pt-8 border-t border-border">
+          <div className="mt-8 pt-8 border-t border-border space-y-4">
+            <button
+              onClick={toggleTheme}
+              className="w-full flex items-center justify-between px-4 py-3 rounded-lg text-foreground hover:bg-primary/10 hover:text-primary transition-colors"
+            >
+              <span className="font-medium">{isDark ? 'Modo Claro' : 'Modo Escuro'}</span>
+              {isDark ? (
+                <Sun className="w-5 h-5" />
+              ) : (
+                <Moon className="w-5 h-5" />
+              )}
+            </button>
             <a
               href="https://www.instagram.com/vivendo_comfibro?igsh=MXQ2cDV1czdoZmV2"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-3 px-4 py-3 bg-gradient-to-r from-primary to-primary-dark text-primary-foreground rounded-lg text-center font-medium"
+              className="flex items-center gap-3 px-4 py-3 bg-gradient-to-r from-primary to-primary-dark text-primary-foreground rounded-lg text-center font-medium justify-center"
             >
               Siga no Instagram
             </a>
