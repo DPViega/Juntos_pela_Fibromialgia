@@ -54,7 +54,7 @@ const Header = () => {
       </div>
 
       {/* Theme Toggle - Desktop only */}
-      <div className="fixed top-4 right-4 z-[100] hidden md:block pointer-events-auto">
+      <div className="fixed top-4 right-4 z-[100] hidden lg:block pointer-events-auto">
         <ThemeToggle />
       </div>
 
