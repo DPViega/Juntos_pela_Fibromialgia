@@ -54,13 +54,13 @@ const Header = () => {
       </div>
 
       {/* Theme Toggle - Desktop only */}
-      <div className="absolute top-4 right-4 z-20 hidden lg:block">
+      <div className="fixed top-4 right-4 z-[100] hidden md:block pointer-events-auto">
         <ThemeToggle />
       </div>
 
       {/* Carousel */}
       <div className="relative h-[400px] md:h-[500px] w-full">
-        <div className="absolute inset-0 bg-gradient-to-b from-primary/20 to-transparent z-10" />
+        <div className="absolute inset-0 bg-gradient-to-b from-primary/20 to-transparent z-10 pointer-events-none" />
         
         {slides.map((slide, index) => (
           <div

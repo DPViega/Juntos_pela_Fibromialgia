@@ -28,8 +28,9 @@ const ThemeToggle = () => {
   return (
     <button
       onClick={toggleTheme}
-      className="p-3 bg-background/90 backdrop-blur-sm rounded-full shadow-soft hover:bg-background transition-colors"
+      className="p-3 bg-background/90 backdrop-blur-sm rounded-full shadow-soft hover:bg-background transition-colors cursor-pointer active:scale-95"
       aria-label="Alternar tema"
+      type="button"
     >
       {isDark ? (
         <Sun className="w-6 h-6 text-foreground" />
