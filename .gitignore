@@ -9,7 +9,7 @@ package-lock.json
 yarn.lock
 
 # Production
-assets/
+dist/
 build/
 
 # Editor directories and files
