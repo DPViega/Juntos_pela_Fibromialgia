@@ -2,8 +2,9 @@ import express from 'express';
 import cors from 'cors';
 import { GoogleGenAI } from '@google/genai';
 
+// A lógica do bot foi movida para uma função exportada para ser usada como middleware
+// ou diretamente como handler serverless.
 const app = express();
-const PORT = 5001;
 
 app.use(cors());
 app.use(express.json());
@@ -111,6 +112,5 @@ app.post('/api/chat', async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`✓ Servidor de IA rodando em http://localhost:${PORT}`);
-});
+// Exporta o app do Express para ser usado como função serverless
+export default app;
