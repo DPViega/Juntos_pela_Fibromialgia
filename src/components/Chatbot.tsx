@@ -123,7 +123,7 @@ export default function Chatbot() {
                   className={`max-w-xs px-4 py-2 rounded-lg ${
                     message.sender === 'user'
                       ? 'bg-purple-600 text-black rounded-br-none'
-                      : 'bg-gray-200 text-gray-800 rounded-bl-none'
+                      : 'bg-gray-200 text-black rounded-bl-none'
                   }`}
                 >
                   <p className="text-sm">{message.text}</p>
