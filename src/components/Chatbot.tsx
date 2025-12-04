@@ -127,7 +127,7 @@ export default function Chatbot() {
                   }`}
                 >
                   <p className="text-sm">{message.text}</p>
-                  <span className="text-xs opacity-0 mt-1 block">
+                  <span className="text-xs opacity-70 mt-1 block">
                     {message.timestamp.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
                   </span>
                 </div>
