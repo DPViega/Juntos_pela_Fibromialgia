@@ -122,12 +122,12 @@ export default function Chatbot() {
                 <div
                   className={`max-w-xs px-4 py-2 rounded-lg ${
                     message.sender === 'user'
-                      ? 'bg-purple-600 text-black rounded-br-none'
+                      ? 'bg-purple-600 text-white rounded-br-none'
                       : 'bg-gray-200 text-gray-800 rounded-bl-none'
                   }`}
                 >
                   <p className="text-sm">{message.text}</p>
-                  <span className="text-xs opacity-70 mt-1 block">
+                  <span className="text-xs opacity-0 mt-1 block">
                     {message.timestamp.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
                   </span>
                 </div>
@@ -135,7 +135,7 @@ export default function Chatbot() {
             ))}
             {isLoading && (
               <div className="flex justify-start">
-                <div className="bg-gray-200 text-black px-4 py-2 rounded-lg rounded-bl-none">
+                <div className="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg rounded-bl-none">
                   <div className="flex space-x-2">
                     <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce"></div>
                     <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce delay-100"></div>
