@@ -122,12 +122,12 @@ export default function Chatbot() {
                 <div
                   className={`max-w-xs px-4 py-2 rounded-lg ${
                     message.sender === 'user'
-                      ? 'bg-purple-600 text-white rounded-br-none'
-                      : 'bg-gray-200 text-gray-800 rounded-bl-none'
+                      ? 'bg-purple-600 text-black rounded-br-none'
+                      : 'bg-gray-200 text-black rounded-bl-none'
                   }`}
                 >
                   <p className="text-sm">{message.text}</p>
-                  <span className="text-xs opacity-30 mt-1 block">
+                  <span className="text-xs opacity-70 mt-1 block">
                     {message.timestamp.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
                   </span>
                 </div>
