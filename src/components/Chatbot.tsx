@@ -135,7 +135,7 @@ export default function Chatbot() {
             ))}
             {isLoading && (
               <div className="flex justify-start">
-                <div className="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg rounded-bl-none">
+                <div className="bg-gray-200 text-black px-4 py-2 rounded-lg rounded-bl-none">
                   <div className="flex space-x-2">
                     <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce"></div>
                     <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce delay-100"></div>
@@ -148,7 +148,7 @@ export default function Chatbot() {
           </div>
 
           {/* Input */}
-          <div className="border-t p-4 bg-white rounded-b-lg flex gap-2">
+          <div className="border-t p-4 bg-black rounded-b-lg flex gap-2">
             <input
               type="text"
               value={input}
