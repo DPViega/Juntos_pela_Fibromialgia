@@ -113,7 +113,7 @@ export default function Chatbot() {
           </div>
 
           {/* Messages */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
+          <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-800">
             {messages.map((message) => (
               <div
                 key={message.id}
@@ -123,7 +123,7 @@ export default function Chatbot() {
                   className={`max-w-xs px-4 py-2 rounded-lg ${
                     message.sender === 'user'
                       ? 'bg-purple-600 text-black rounded-br-none'
-                      : 'bg-gray-200 text-black rounded-bl-none'
+                      : 'bg-gray-200 text-gray-800 rounded-bl-none'
                   }`}
                 >
                   <p className="text-sm">{message.text}</p>
@@ -135,7 +135,7 @@ export default function Chatbot() {
             ))}
             {isLoading && (
               <div className="flex justify-start">
-                <div className="bg-gray-200 text-black px-4 py-2 rounded-lg rounded-bl-none">
+                <div className="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg rounded-bl-none">
                   <div className="flex space-x-2">
                     <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce"></div>
                     <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce delay-100"></div>
@@ -148,7 +148,7 @@ export default function Chatbot() {
           </div>
 
           {/* Input */}
-          <div className="border-t p-4 bg-black rounded-b-lg flex gap-2">
+          <div className="border-t p-4 bg-white rounded-b-lg flex gap-2">
             <input
               type="text"
               value={input}
