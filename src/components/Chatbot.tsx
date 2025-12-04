@@ -14,10 +14,11 @@ export default function Chatbot() {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      text: 'Olá! Bem-vindo ao site sobre Fibromialgia. Sou um assistente de IA aqui para responder suas perguntas sobre fibromialgia, sintomas, tratamentos e como viver melhor com esta condição. Como posso ajudá-lo?',
+      text:
+        'Olá! Bem-vindo ao site sobre Fibromialgia. Sou um assistente de IA aqui para responder suas perguntas sobre fibromialgia, sintomas, tratamentos e como viver melhor com esta condição. Como posso ajudá-lo?',
       sender: 'bot',
-      timestamp: new Date()
-    }
+      timestamp: new Date(),
+    },
   ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -38,10 +39,10 @@ export default function Chatbot() {
       id: Date.now().toString(),
       text: input,
       sender: 'user',
-      timestamp: new Date()
+      timestamp: new Date(),
     };
 
-    setMessages(prev => [...prev, userMessage]);
+    setMessages((prev) => [...prev, userMessage]);
     const userInput = input;
     setInput('');
     setIsLoading(true);
@@ -52,10 +53,10 @@ export default function Chatbot() {
         id: (Date.now() + 1).toString(),
         text: botResponseText,
         sender: 'bot',
-        timestamp: new Date()
+        timestamp: new Date(),
       };
-      setMessages(prev => [...prev, botResponse]);
-      
+      setMessages((prev) => [...prev, botResponse]);
+
       // Encerrar conversa se houver indicação
       if (botResponseText.includes('[CONVERSA ENCERRADA]')) {
         setTimeout(() => {
@@ -66,11 +67,12 @@ export default function Chatbot() {
       console.error('Erro ao enviar mensagem:', error);
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
-        text: 'Desculpe, houve um erro ao processar sua pergunta. Por favor, tente novamente.',
+        text:
+          'Desculpe, houve um erro ao processar sua pergunta. Por favor, tente novamente.',
         sender: 'bot',
-        timestamp: new Date()
+        timestamp: new Date(),
       };
-      setMessages(prev => [...prev, errorMessage]);
+      setMessages((prev) => [...prev, errorMessage]);
     } finally {
       setIsLoading(false);
     }
@@ -96,7 +98,7 @@ export default function Chatbot() {
       )}
 
       {isOpen && (
-        <div className="fixed bottom-6 right-6 w-96 h-96 bg-white rounded-lg shadow-2xl flex flex-col z-50 border border-gray-200">
+        <div className="fixed bottom-6 right-6 w-96 h-96 bg-white rounded-lg shadow-2xl flex flex-col z-50 border border-gray-200 dark:bg-gray-900 dark:border-gray-800">
           {/* Header */}
           <div className="bg-gradient-to-r from-purple-600 to-purple-700 text-white p-4 rounded-t-lg flex justify-between items-center">
             <div>
@@ -113,7 +115,7 @@ export default function Chatbot() {
           </div>
 
           {/* Messages */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
+          <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50 dark:bg-gray-800">
             {messages.map((message) => (
               <div
                 key={message.id}
@@ -122,20 +124,23 @@ export default function Chatbot() {
                 <div
                   className={`max-w-xs px-4 py-2 rounded-lg ${
                     message.sender === 'user'
-                      ? 'bg-purple-600 text-white rounded-br-none'
-                      : 'bg-gray-200 text-gray-800 rounded-bl-none'
+                      ? 'bg-purple-600 text-white rounded-br-none dark:bg-purple-500'
+                      : 'bg-gray-200 text-gray-800 rounded-bl-none dark:bg-gray-700 dark:text-gray-100'
                   }`}
                 >
                   <p className="text-sm">{message.text}</p>
                   <span className="text-xs opacity-70 mt-1 block">
-                    {message.timestamp.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+                    {message.timestamp.toLocaleTimeString('pt-BR', {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    })}
                   </span>
                 </div>
               </div>
             ))}
             {isLoading && (
               <div className="flex justify-start">
-                <div className="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg rounded-bl-none">
+                <div className="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg rounded-bl-none dark:bg-gray-700 dark:text-gray-100">
                   <div className="flex space-x-2">
                     <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce"></div>
                     <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce delay-100"></div>
@@ -148,14 +153,16 @@ export default function Chatbot() {
           </div>
 
           {/* Input */}
-          <div className="border-t p-4 bg-white rounded-b-lg flex gap-2">
+          <div className="border-t p-4 bg-white rounded-b-lg flex gap-2 dark:bg-gray-900 dark:border-t-0">
             <input
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyPress={handleKeyPress}
               placeholder="Digite sua mensagem..."
-              className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500
+                         bg-white text-gray-900 placeholder-gray-500
+                         dark:bg-gray-800 dark:border-gray-600 dark:text-gray-100 dark:placeholder-gray-400"
             />
             <button
               onClick={handleSendMessage}
