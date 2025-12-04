@@ -122,7 +122,7 @@ export default function Chatbot() {
                 <div
                   className={`max-w-xs px-4 py-2 rounded-lg ${
                     message.sender === 'user'
-                      ? 'bg-purple-600 text-black rounded-br-none'
+                      ? 'bg-purple-600 text-white rounded-br-none'
                       : 'bg-gray-200 text-gray-800 rounded-bl-none'
                   }`}
                 >
