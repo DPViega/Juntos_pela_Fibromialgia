@@ -1,10 +1,12 @@
 import { useState, useRef, useEffect } from 'react';
-import { Send, Sparkles, X, Loader2, Paperclip, FileText, Plus, MessageSquare, ArrowLeft, Menu, PanelLeft } from 'lucide-react';
+import { Send, Sparkles, X, Loader2, Paperclip, FileText, Plus, MessageSquare, ArrowLeft, Menu, PanelLeft, Trash2 } from 'lucide-react';
 import { chatWithGemini } from '@/lib/gemini';
+import { supabase } from '@/lib/supabase';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@/context/AuthContext';
 
 interface Attachment {
     url: string;
@@ -27,16 +29,27 @@ const SUGGESTIONS = [
     { title: "Gerar Engajamento", description: "Crie uma chamada para ação para um post informativo." }
 ];
 
+interface ChatSession {
+    id: string;
+    title: string;
+    created_at: string;
+}
+
 export default function AIAssistant() {
     const navigate = useNavigate();
-    const [messages, setMessages] = useState<Message[]>([
-        {
-            id: "init",
-            text: "Olá! Como o seu Especialista de Marketing IA, estou pronto para sugerir ideias, analisar textos ou ler PDFs de apoio. Como posso te ajudar hoje?",
-            sender: "bot",
-            timestamp: new Date(),
-        }
-    ]);
+    const { user } = useAuth();
+
+    const initialMessage: Message = {
+        id: "init",
+        text: "Olá! Como o seu Especialista de Marketing IA, estou pronto para sugerir ideias, analisar textos ou ler PDFs de apoio. Como posso te ajudar hoje?",
+        sender: "bot",
+        timestamp: new Date(),
+    };
+
+    const [messages, setMessages] = useState<Message[]>([initialMessage]);
+    const [sessions, setSessions] = useState<ChatSession[]>([]);
+    const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
+
     const [input, setInput] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -55,6 +68,59 @@ export default function AIAssistant() {
     useEffect(() => {
         scrollToBottom();
     }, [messages]);
+
+    useEffect(() => {
+        if (user) {
+            loadSessions();
+        }
+    }, [user]);
+
+    const loadSessions = async () => {
+        const { data, error } = await supabase
+            .from('admin_chat_sessions')
+            .select('id, title, created_at')
+            .order('updated_at', { ascending: false });
+
+        if (!error && data) {
+            setSessions(data);
+        }
+    };
+
+    const loadSessionMessages = async (id: string) => {
+        const { data, error } = await supabase
+            .from('admin_chat_sessions')
+            .select('messages')
+            .eq('id', id)
+            .single();
+
+        if (!error && data) {
+            const restoredMessages = (data.messages as Message[]).map(m => ({
+                ...m,
+                timestamp: new Date(m.timestamp)
+            }));
+            setMessages(restoredMessages);
+            setCurrentSessionId(id);
+            if (window.innerWidth < 768) {
+                setSidebarOpen(false);
+            }
+        } else {
+            toast.error('Erro ao carregar sessão.');
+        }
+    };
+
+    const deleteSession = async (e: React.MouseEvent, id: string) => {
+        e.stopPropagation();
+        const { error } = await supabase.from('admin_chat_sessions').delete().eq('id', id);
+        if (!error) {
+            setSessions(prev => prev.filter(s => s.id !== id));
+            if (currentSessionId === id || sessions.length === 1) {
+                handleNewChat();
+            }
+            toast.success("Sessão deletada com sucesso.");
+        } else {
+            toast.error("Erro ao deletar sessão.");
+        }
+    };
 
     const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files.length > 0) {
@@ -131,7 +197,37 @@ export default function AIAssistant() {
             attachments: localPreviews.length > 0 ? localPreviews : undefined,
         };
 
-        setMessages((prev) => [...prev, userMessage]);
+        let currentMessages = [...messages, userMessage];
+        setMessages(currentMessages);
+
+        let activeSessionId = currentSessionId;
+
+        // Create new session if this is the first real message
+        if (!activeSessionId && currentMessages.length === 2 && currentMessages[0].id === 'init') {
+            const generatedTitle = textToSend.substring(0, 30) + (textToSend.length > 30 ? "..." : "");
+
+            const { data, error } = await supabase
+                .from('admin_chat_sessions')
+                .insert({
+                    user_id: user?.id,
+                    title: generatedTitle,
+                    messages: currentMessages
+                })
+                .select()
+                .single();
+
+            if (data && !error) {
+                activeSessionId = data.id;
+                setCurrentSessionId(data.id);
+                setSessions(prev => [data, ...prev]);
+            }
+        } else if (activeSessionId) {
+            // Update existing session with user message
+            await supabase.from('admin_chat_sessions').update({
+                messages: currentMessages,
+                updated_at: new Date().toISOString()
+            }).eq('id', activeSessionId);
+        }
 
         // Clear inputs immediately
         setInput('');
@@ -147,7 +243,16 @@ export default function AIAssistant() {
                 sender: 'bot',
                 timestamp: new Date(),
             };
-            setMessages((prev) => [...prev, botResponse]);
+
+            currentMessages = [...currentMessages, botResponse];
+            setMessages(currentMessages);
+
+            if (activeSessionId) {
+                await supabase.from('admin_chat_sessions').update({
+                    messages: currentMessages,
+                    updated_at: new Date().toISOString()
+                }).eq('id', activeSessionId);
+            }
 
         } catch (error) {
             console.error('Erro:', error);
@@ -165,14 +270,8 @@ export default function AIAssistant() {
     };
 
     const handleNewChat = () => {
-        setMessages([
-            {
-                id: "init",
-                text: "Olá! Como o seu Especialista de Marketing IA, estou pronto para sugerir ideias, analisar textos ou ler PDFs de apoio. Como posso te ajudar hoje?",
-                sender: "bot",
-                timestamp: new Date(),
-            }
-        ]);
+        setMessages([initialMessage]);
+        setCurrentSessionId(null);
         setInput('');
         setSelectedFiles([]);
         setFilePreviews([]);
@@ -193,12 +292,43 @@ export default function AIAssistant() {
                             Novo Chat
                         </Button>
 
-                        <div className="flex-1 overflow-y-auto pt-4 space-y-2">
+                        <div className="flex-1 overflow-y-auto pt-4 space-y-2 scrollbar-thin scrollbar-thumb-muted-foreground/20 pr-1">
                             <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-2 mb-3">Histórico</h3>
-                            <button className="w-full text-left px-3 py-2 text-sm text-foreground bg-accent/20 hover:bg-accent/40 rounded-lg truncate transition-colors flex items-center gap-2">
-                                <MessageSquare className="w-4 h-4 text-primary shrink-0" />
-                                <span className="truncate">Sessão Atual</span>
-                            </button>
+
+                            {!currentSessionId && messages.length > 1 && (
+                                <button className="w-full text-left px-3 py-2 text-sm text-foreground bg-accent/20 hover:bg-accent/40 rounded-lg truncate transition-colors flex items-center gap-2">
+                                    <MessageSquare className="w-4 h-4 text-primary shrink-0" />
+                                    <span className="truncate">Sessão Atual não salva</span>
+                                </button>
+                            )}
+
+                            {sessions.map((session) => (
+                                <div key={session.id} className="group relative">
+                                    <button
+                                        onClick={() => loadSessionMessages(session.id)}
+                                        className={`w-full text-left px-3 py-2 text-sm rounded-lg truncate transition-colors flex items-center gap-2 ${currentSessionId === session.id
+                                                ? 'bg-accent/30 text-foreground font-medium border border-border/50'
+                                                : 'text-muted-foreground hover:bg-accent/20 hover:text-foreground'
+                                            }`}
+                                    >
+                                        <MessageSquare className={`w-4 h-4 shrink-0 ${currentSessionId === session.id ? 'text-primary' : ''}`} />
+                                        <span className="truncate block pr-6">{session.title}</span>
+                                    </button>
+                                    <button
+                                        onClick={(e) => deleteSession(e, session.id)}
+                                        className="absolute right-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 p-1.5 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-md transition-all"
+                                        title="Excluir sessão"
+                                    >
+                                        <Trash2 className="w-3.5 h-3.5" />
+                                    </button>
+                                </div>
+                            ))}
+
+                            {sessions.length === 0 && messages.length === 1 && (
+                                <div className="text-center px-2 py-4 text-xs text-muted-foreground">
+                                    Nenhuma conversa anterior
+                                </div>
+                            )}
                         </div>
                     </div>
 
@@ -246,12 +376,42 @@ export default function AIAssistant() {
                                 Novo Chat
                             </Button>
 
-                            <div className="flex-1 overflow-y-auto space-y-2">
+                            <div className="flex-1 overflow-y-auto space-y-2 scrollbar-thin pr-1">
                                 <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-2 mb-2">Histórico</h3>
-                                <button className="w-full text-left px-3 py-2 text-sm text-foreground bg-accent/20 rounded-lg truncate flex items-center gap-2">
-                                    <MessageSquare className="w-4 h-4 text-primary" />
-                                    Sessão Atual
-                                </button>
+
+                                {!currentSessionId && messages.length > 1 && (
+                                    <button className="w-full text-left px-3 py-2 text-sm text-foreground bg-accent/20 hover:bg-accent/40 rounded-lg truncate flex items-center gap-2">
+                                        <MessageSquare className="w-4 h-4 text-primary shrink-0" />
+                                        <span className="truncate">Sessão Atual</span>
+                                    </button>
+                                )}
+
+                                {sessions.map((session) => (
+                                    <div key={session.id} className="relative group">
+                                        <button
+                                            onClick={() => loadSessionMessages(session.id)}
+                                            className={`w-full text-left px-3 py-2.5 text-sm rounded-lg truncate flex items-center gap-2 ${currentSessionId === session.id
+                                                    ? 'bg-accent/30 text-foreground font-medium'
+                                                    : 'text-muted-foreground hover:bg-accent/10'
+                                                }`}
+                                        >
+                                            <MessageSquare className={`w-4 h-4 shrink-0 ${currentSessionId === session.id ? 'text-primary' : ''}`} />
+                                            <span className="truncate block pr-6">{session.title}</span>
+                                        </button>
+                                        <button
+                                            onClick={(e) => deleteSession(e, session.id)}
+                                            className="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-muted-foreground hover:text-destructive transition-colors"
+                                        >
+                                            <Trash2 className="w-4 h-4" />
+                                        </button>
+                                    </div>
+                                ))}
+
+                                {sessions.length === 0 && messages.length === 1 && (
+                                    <div className="text-center px-2 py-4 text-xs text-muted-foreground">
+                                        Nenhuma conversa
+                                    </div>
+                                )}
                             </div>
                         </div>
 

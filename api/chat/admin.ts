@@ -15,7 +15,7 @@ REGRAS ESTRITAS:
 - Sugira ganchos e títulos atrativos.
 - Mantenha um tom profissional, acolhedor e inspirador. As respostas podem ter tamanho médio.`;
 
-export const handleAdminChat = async (req: Request, res: Response) => {
+export default async function handler(req: Request, res: Response) {
     try {
         const { message, files } = req.body;
 
@@ -23,7 +23,7 @@ export const handleAdminChat = async (req: Request, res: Response) => {
             return res.status(400).json({ error: 'Mensagem vazia' });
         }
 
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
         const parts: Part[] = [
             {
@@ -59,8 +59,8 @@ export const handleAdminChat = async (req: Request, res: Response) => {
 
         const responseText = response.response.text() || "Desculpe, não consegui processar sua pergunta.";
         res.json({ text: responseText });
-    } catch (error) {
-        console.error("Erro ao chamar Gemini (Admin):", error);
-        res.status(500).json({ error: "Erro ao comunicar com o assistente IA" });
+    } catch (error: any) {
+        console.error("Erro ao chamar Gemini (Admin):", error.message, error.stack);
+        res.status(500).json({ error: "Erro ao comunicar com o assistente IA", details: error.message });
     }
 };

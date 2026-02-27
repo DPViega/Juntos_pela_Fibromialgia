@@ -57,7 +57,7 @@ function getHeavyProfanityResponse(): string {
     return `Como Sócrates ensinava, a verdadeira força vem da compaixão e respeito, não das palavras duras. As palavras curam ou ferem. Estaremos aqui quando estiver em paz. 💜`;
 }
 
-export const handleSupportChat = async (req: Request, res: Response) => {
+export default async function handler(req: Request, res: Response) {
     try {
         const { message } = req.body;
 
@@ -80,7 +80,7 @@ export const handleSupportChat = async (req: Request, res: Response) => {
             });
         }
 
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
         const response = await model.generateContent({
             contents: [
@@ -97,8 +97,8 @@ export const handleSupportChat = async (req: Request, res: Response) => {
 
         const responseText = response.response.text() || "Desculpe, não consegui processar sua pergunta.";
         res.json({ text: responseText });
-    } catch (error) {
-        console.error("Erro ao chamar Gemini (Support):", error);
-        res.status(500).json({ error: "Erro ao comunicar com o assistente IA" });
+    } catch (error: any) {
+        console.error("Erro ao chamar Gemini (Support):", error.message, error.stack);
+        res.status(500).json({ error: "Erro ao comunicar com o assistente IA", details: error.message });
     }
 };
