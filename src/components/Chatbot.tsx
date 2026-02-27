@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
-import { MessageCircle, X, Send } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
+import { MessageCircle, X, Send, Sparkles } from 'lucide-react';
 import { chatWithGemini } from '@/lib/gemini';
 
 interface Message {
@@ -11,15 +12,18 @@ interface Message {
 
 export default function Chatbot() {
   const [isOpen, setIsOpen] = useState(false);
+  const location = useLocation();
+  const isAdminPath = location.pathname.startsWith('/admin');
+
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      text:
-        'Olá! Bem-vindo ao site sobre Fibromialgia. Sou um assistente de IA aqui para responder suas perguntas sobre fibromialgia, sintomas, tratamentos e como viver melhor com esta condição. Como posso ajudá-lo?',
+      text: 'Olá! Bem-vindo ao site sobre Fibromialgia. Sou um assistente de IA aqui para responder suas perguntas sobre fibromialgia, sintomas, tratamentos e como viver melhor com esta condição. Como posso ajudá-lo?',
       sender: 'bot',
       timestamp: new Date(),
     },
   ]);
+
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -31,6 +35,8 @@ export default function Chatbot() {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  if (isAdminPath) return null;
 
   const handleSendMessage = async () => {
     if (!input.trim()) return;
@@ -122,11 +128,10 @@ export default function Chatbot() {
                 className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
               >
                 <div
-                  className={`max-w-xs px-4 py-2 rounded-lg ${
-                    message.sender === 'user'
-                      ? 'bg-purple-600 text-white rounded-br-none dark:bg-purple-500'
-                      : 'bg-gray-200 text-gray-800 rounded-bl-none dark:bg-gray-700 dark:text-gray-100'
-                  }`}
+                  className={`max-w-xs px-4 py-2 rounded-lg ${message.sender === 'user'
+                    ? 'bg-purple-600 text-white rounded-br-none dark:bg-purple-500'
+                    : 'bg-gray-200 text-gray-800 rounded-bl-none dark:bg-gray-700 dark:text-gray-100'
+                    }`}
                 >
                   <p className="text-sm">{message.text}</p>
                   <span className="text-xs opacity-70 mt-1 block">

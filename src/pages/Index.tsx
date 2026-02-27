@@ -6,12 +6,13 @@ import InfoSection from "@/components/InfoSection";
 import SymptomCard from "@/components/SymptomCard";
 import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
-import { 
-  Brain, 
-  Heart, 
-  Activity, 
-  Moon, 
-  AlertCircle, 
+import { Link } from "react-router-dom";
+import {
+  Brain,
+  Heart,
+  Activity,
+  Moon,
+  AlertCircle,
   Sparkles,
   Users,
   BookOpen,
@@ -21,7 +22,8 @@ import {
   MessageCircle,
   Globe,
   Info,
-  FileText
+  FileText,
+  ArrowRight
 } from "lucide-react";
 
 const Index = () => {
@@ -37,17 +39,17 @@ const Index = () => {
         <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
           <div className="space-y-4 md:space-y-6">
             <p className="text-base md:text-lg text-muted-foreground leading-relaxed">
-              A fibromialgia é uma síndrome caracterizada por dor musculoesquelética 
+              A fibromialgia é uma síndrome caracterizada por dor musculoesquelética
               generalizada, acompanhada por fadiga, sono, problemas de memória e humor.
             </p>
             <p className="text-base md:text-lg text-muted-foreground leading-relaxed">
-              Pesquisadores acreditam que a fibromialgia amplifica as sensações de dor, 
-              afetando a forma como o cérebro e a medula espinhal processam sinais 
+              Pesquisadores acreditam que a fibromialgia amplifica as sensações de dor,
+              afetando a forma como o cérebro e a medula espinhal processam sinais
               dolorosos e não dolorosos.
             </p>
             <div className="bg-primary/10 p-4 md:p-6 rounded-lg">
               <p className="text-sm md:text-base text-foreground font-medium">
-                Aproximadamente 2-4% da população mundial é afetada pela fibromialgia, 
+                Aproximadamente 2-4% da população mundial é afetada pela fibromialgia,
                 sendo mais comum em mulheres do que em homens.
               </p>
             </div>
@@ -106,7 +108,7 @@ const Index = () => {
         <div className="space-y-6 md:space-y-8">
           <div className="text-center mb-8 md:mb-12">
             <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto px-2">
-              Viver com fibromialgia requer adaptações, mas é possível ter qualidade de vida 
+              Viver com fibromialgia requer adaptações, mas é possível ter qualidade de vida
               com o tratamento e apoio adequados.
             </p>
           </div>
@@ -203,12 +205,12 @@ const Index = () => {
       </InfoSection>
 
       {/* Resources Section */}
-    <InfoSection id="recursos" title="Recursos e Informações" gradient>
+      <InfoSection id="recursos" title="Recursos e Informações" gradient>
         {/* Video Section */}
         <div className="mb-12 max-w-4xl mx-auto">
           <div className="relative rounded-xl overflow-hidden shadow-xl bg-gradient-to-br from-primary/10 to-primary-light/10 p-1">
-            <video 
-              controls 
+            <video
+              controls
               className="w-full rounded-lg"
               poster="/fibromialgia-poster.jpg"
             >
@@ -225,14 +227,17 @@ const Index = () => {
 
         </div>
 
-        <div className="grid md:grid-cols-2 gap-6 md:gap-8">
-          <div className="bg-card p-5 md:p-6 rounded-lg shadow-card">
+        <div className="grid md:grid-cols-3 gap-6 md:gap-8">
+          <div className="bg-card p-5 md:p-6 rounded-lg shadow-card relative group hover:shadow-lg transition-all border border-transparent hover:border-primary/20">
+            <div className="absolute top-4 right-4 text-primary opacity-20 group-hover:opacity-100 transition-opacity">
+              <BookOpen className="w-12 h-12" />
+            </div>
             <BookOpen className="w-7 md:w-8 h-7 md:h-8 text-primary mb-4" />
             <h3 className="text-lg md:text-xl font-semibold mb-3 text-foreground">Material Educativo</h3>
             <p className="text-sm md:text-base text-muted-foreground mb-4">
               Acesse informações confiáveis sobre fibromialgia, tratamentos e pesquisas recentes.
             </p>
-            <ul className="space-y-2 text-xs md:text-sm text-muted-foreground">
+            <ul className="space-y-2 text-xs md:text-sm text-muted-foreground mb-4">
               <li>• Guias sobre manejo da dor</li>
               <li>• Técnicas de relaxamento</li>
               <li>• Dicas de exercícios adaptados</li>
@@ -240,19 +245,40 @@ const Index = () => {
             </ul>
           </div>
 
-          <div className="bg-card p-5 md:p-6 rounded-lg shadow-card">
+          <div className="bg-card p-5 md:p-6 rounded-lg shadow-card relative group hover:shadow-lg transition-all border border-transparent hover:border-primary/20">
+            <div className="absolute top-4 right-4 text-primary opacity-20 group-hover:opacity-100 transition-opacity">
+              <Heart className="w-12 h-12" />
+            </div>
             <Heart className="w-7 md:w-8 h-7 md:h-8 text-primary mb-4" />
             <h3 className="text-lg md:text-xl font-semibold mb-3 text-foreground">Dicas de Bem-estar</h3>
             <p className="text-sm md:text-base text-muted-foreground mb-4">
               Estratégias práticas para melhorar sua qualidade de vida no dia a dia.
             </p>
-            <ul className="space-y-2 text-xs md:text-sm text-muted-foreground">
+            <ul className="space-y-2 text-xs md:text-sm text-muted-foreground mb-4">
               <li>• Técnicas de conservação de energia</li>
               <li>• Adaptações no ambiente</li>
               <li>• Rotinas de autocuidado</li>
               <li>• Mindfulness e meditação</li>
             </ul>
           </div>
+
+          <Link to="/blog" className="block">
+            <div className="bg-gradient-to-br from-primary/10 to-accent/10 p-5 md:p-6 rounded-lg shadow-card h-full border-2 border-primary/20 hover:border-primary transition-all hover:scale-105 cursor-pointer relative overflow-hidden group">
+              <div className="absolute top-0 right-0 bg-primary text-primary-foreground text-xs px-3 py-1 rounded-bl-lg font-medium">
+                Área de Membros
+              </div>
+              <FileText className="w-7 md:w-8 h-7 md:h-8 text-primary mb-4 group-hover:scale-110 transition-transform" />
+              <h3 className="text-lg md:text-xl font-semibold mb-3 text-foreground">
+                Blog Exclusivo
+              </h3>
+              <p className="text-sm md:text-base text-muted-foreground mb-6">
+                Artigos especiais, histórias de superação e conteúdo aprofundado para nossa comunidade.
+              </p>
+              <div className="flex items-center text-primary font-medium group-hover:translate-x-2 transition-transform">
+                Acessar Agora <ArrowRight className="ml-2 w-4 h-4" />
+              </div>
+            </div>
+          </Link>
         </div>
 
         {/* Links Section */}
@@ -261,9 +287,9 @@ const Index = () => {
             Links Úteis
           </h3>
           <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
-            <a 
-              href="https://www.sbr.org.br" 
-              target="_blank" 
+            <a
+              href="https://www.sbr.org.br"
+              target="_blank"
               rel="noopener noreferrer"
               className="group bg-gradient-to-br from-primary/20 to-primary-light/20 hover:from-primary/30 hover:to-primary-light/30 p-4 rounded-lg border border-primary/30 hover:border-primary/50 transition-all duration-300 hover:shadow-soft"
             >
@@ -278,9 +304,9 @@ const Index = () => {
               </div>
             </a>
 
-            <a 
-              href="https://www.niams.nih.gov/health-topics/fibromyalgia" 
-              target="_blank" 
+            <a
+              href="https://www.niams.nih.gov/health-topics/fibromyalgia"
+              target="_blank"
               rel="noopener noreferrer"
               className="group bg-gradient-to-br from-accent/30 to-primary/20 hover:from-accent/40 hover:to-primary/30 p-4 rounded-lg border border-accent/40 hover:border-accent/60 transition-all duration-300 hover:shadow-soft"
             >
@@ -295,9 +321,9 @@ const Index = () => {
               </div>
             </a>
 
-            <a 
-              href="https://www.abrafibro.com.br" 
-              target="_blank" 
+            <a
+              href="https://www.abrafibro.com.br"
+              target="_blank"
               rel="noopener noreferrer"
               className="group bg-gradient-to-br from-primary-light/25 to-accent/25 hover:from-primary-light/35 hover:to-accent/35 p-4 rounded-lg border border-primary-light/40 hover:border-primary-light/60 transition-all duration-300 hover:shadow-soft"
             >
@@ -312,9 +338,9 @@ const Index = () => {
               </div>
             </a>
 
-            <a 
-              href="https://www.fmaware.org" 
-              target="_blank" 
+            <a
+              href="https://www.fmaware.org"
+              target="_blank"
               rel="noopener noreferrer"
               className="group bg-gradient-to-br from-primary/20 to-primary-dark/20 hover:from-primary/30 hover:to-primary-dark/30 p-4 rounded-lg border border-primary/30 hover:border-primary/50 transition-all duration-300 hover:shadow-soft"
             >
@@ -329,9 +355,9 @@ const Index = () => {
               </div>
             </a>
 
-            <a 
-              href="https://www.arthritis.org/diseases/fibromyalgia" 
-              target="_blank" 
+            <a
+              href="https://www.arthritis.org/diseases/fibromyalgia"
+              target="_blank"
               rel="noopener noreferrer"
               className="group bg-gradient-to-br from-accent/30 to-primary-light/30 hover:from-accent/40 hover:to-primary-light/40 p-4 rounded-lg border border-accent/40 hover:border-accent/60 transition-all duration-300 hover:shadow-soft"
             >
@@ -346,9 +372,9 @@ const Index = () => {
               </div>
             </a>
 
-            <a 
-              href="https://www.who.int/news-room/fact-sheets/detail/musculoskeletal-conditions" 
-              target="_blank" 
+            <a
+              href="https://www.who.int/news-room/fact-sheets/detail/musculoskeletal-conditions"
+              target="_blank"
               rel="noopener noreferrer"
               className="group bg-gradient-to-br from-primary-light/25 to-primary/25 hover:from-primary-light/35 hover:to-primary/35 p-4 rounded-lg border border-primary-light/40 hover:border-primary-light/60 transition-all duration-300 hover:shadow-soft"
             >

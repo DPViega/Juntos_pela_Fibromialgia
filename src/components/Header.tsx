@@ -8,7 +8,7 @@ import heroSlide3 from "@/assets/hero-slide-3.jpg";
 
 const Header = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
-  
+
   const slides = [
     {
       image: heroSlide1,
@@ -53,21 +53,17 @@ const Header = () => {
         </div>
       </div>
 
-      {/* Theme Toggle - Desktop only */}
-      <div className="fixed top-4 right-4 z-[100] hidden lg:block pointer-events-auto">
-        <ThemeToggle />
-      </div>
+
 
       {/* Carousel */}
       <div className="relative h-[400px] md:h-[500px] w-full">
         <div className="absolute inset-0 bg-gradient-to-b from-primary/20 to-transparent z-10 pointer-events-none" />
-        
+
         {slides.map((slide, index) => (
           <div
             key={index}
-            className={`absolute inset-0 transition-opacity duration-1000 ${
-              index === currentSlide ? "opacity-100" : "opacity-0"
-            }`}
+            className={`absolute inset-0 transition-opacity duration-1000 ${index === currentSlide ? "opacity-100" : "opacity-0"
+              }`}
           >
             <img
               src={slide.image}
@@ -112,11 +108,10 @@ const Header = () => {
             <button
               key={index}
               onClick={() => setCurrentSlide(index)}
-              className={`w-2 h-2 rounded-full transition-all ${
-                index === currentSlide
+              className={`w-2 h-2 rounded-full transition-all ${index === currentSlide
                   ? "w-8 bg-background"
                   : "bg-background/50"
-              }`}
+                }`}
               aria-label={`Ir para slide ${index + 1}`}
             />
           ))}

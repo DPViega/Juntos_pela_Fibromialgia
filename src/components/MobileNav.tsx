@@ -1,13 +1,26 @@
 import { useState, useEffect } from "react";
 import { Menu, X, Moon, Sun } from "lucide-react";
 import FibromyalgiaRibbon from "./FibromyalgiaRibbon";
+import { useNavigate, useLocation } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import { LogOut, LayoutGrid, User, LogIn } from "lucide-react";
 
 const MobileNav = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isDark, setIsDark] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { user, signOut } = useAuth();
+  const isAdmin = user?.role === "admin";
+
+  const handleLogout = async () => {
+    await signOut();
+    navigate("/");
+    setIsOpen(false);
+  };
 
   useEffect(() => {
-    const isDarkMode = localStorage.getItem('theme') === 'dark' || 
+    const isDarkMode = localStorage.getItem('theme') === 'dark' ||
       (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
     setIsDark(isDarkMode);
     if (isDarkMode) {
@@ -19,7 +32,7 @@ const MobileNav = () => {
     const newIsDark = !isDark;
     setIsDark(newIsDark);
     localStorage.setItem('theme', newIsDark ? 'dark' : 'light');
-    
+
     if (newIsDark) {
       document.documentElement.classList.add('dark');
     } else {
@@ -27,9 +40,21 @@ const MobileNav = () => {
     }
   };
 
-  const scrollToSection = (id: string) => {
-    const element = document.getElementById(id);
-    element?.scrollIntoView({ behavior: "smooth" });
+  const handleNavClick = (id: string, isRoute: boolean = false) => {
+    if (isRoute) {
+      navigate(id);
+    } else {
+      if (location.pathname === "/") {
+        const element = document.getElementById(id);
+        element?.scrollIntoView({ behavior: "smooth" });
+      } else {
+        navigate("/");
+        setTimeout(() => {
+          const element = document.getElementById(id);
+          element?.scrollIntoView({ behavior: "smooth" });
+        }, 100);
+      }
+    }
     setIsOpen(false);
   };
 
@@ -39,6 +64,7 @@ const MobileNav = () => {
     { id: "vivendo", label: "Vivendo com Fibromialgia" },
     { id: "apoio", label: "Apoio" },
     { id: "recursos", label: "Recursos" },
+    { id: "/blog", label: "Blog", isRoute: true },
   ];
 
   return (
@@ -66,9 +92,8 @@ const MobileNav = () => {
 
       {/* Mobile Menu */}
       <nav
-        className={`fixed top-0 right-0 h-full w-72 bg-background border-l border-border shadow-2xl z-[95] transform transition-transform duration-300 lg:hidden ${
-          isOpen ? "translate-x-0" : "translate-x-full"
-        }`}
+        className={`fixed top-0 right-0 h-full w-72 bg-background border-l border-border shadow-2xl z-[95] transform transition-transform duration-300 lg:hidden ${isOpen ? "translate-x-0" : "translate-x-full"
+          }`}
       >
         <div className="p-6">
           <div className="flex items-center gap-3 mb-8">
@@ -79,11 +104,61 @@ const MobileNav = () => {
             </div>
           </div>
 
+
+
+          {user ? (
+            <div className="mb-6 pb-6 border-b border-border">
+              <div className="flex items-center gap-3 px-4 mb-4">
+                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary overflow-hidden">
+                  {user.avatar_url ? (
+                    <img src={user.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
+                  ) : (
+                    <User className="w-5 h-5" />
+                  )}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium truncate text-foreground">{user.username || user.email}</p>
+                  <p className="text-xs text-muted-foreground">{isAdmin ? "Administrador" : "Membro"}</p>
+                </div>
+              </div>
+
+              {isAdmin && (
+                <button
+                  onClick={() => { navigate("/admin"); setIsOpen(false); }}
+                  className="w-full text-left px-4 py-2 text-sm font-medium text-foreground hover:bg-primary/5 flex items-center gap-2 rounded-lg"
+                >
+                  <User className="w-4 h-4" /> ADMIN
+                </button>
+              )}
+              <button
+                onClick={() => { navigate("/profile"); setIsOpen(false); }}
+                className="w-full text-left px-4 py-2 text-sm font-medium text-foreground hover:bg-primary/5 flex items-center gap-2 rounded-lg"
+              >
+                <User className="w-4 h-4" /> Meu Perfil
+              </button>
+              <button
+                onClick={handleLogout}
+                className="w-full text-left px-4 py-2 text-sm font-medium text-red-500 hover:bg-red-50 flex items-center gap-2 rounded-lg"
+              >
+                <LogOut className="w-4 h-4" /> Sair
+              </button>
+            </div>
+          ) : (
+            <div className="mb-6 pb-6 border-b border-border px-4">
+              <button
+                onClick={() => { navigate("/login"); setIsOpen(false); }}
+                className="w-full bg-primary text-primary-foreground py-2 rounded-lg font-medium flex items-center justify-center gap-2"
+              >
+                <LogIn className="w-4 h-4" /> Entrar / Cadastrar
+              </button>
+            </div>
+          )}
+
           <ul className="space-y-2">
             {navItems.map((item) => (
               <li key={item.id}>
                 <button
-                  onClick={() => scrollToSection(item.id)}
+                  onClick={() => handleNavClick(item.id, item.isRoute)}
                   className="w-full text-left px-4 py-3 rounded-lg text-foreground hover:bg-primary/10 hover:text-primary transition-colors"
                 >
                   {item.label}
@@ -114,9 +189,11 @@ const MobileNav = () => {
             </a>
           </div>
         </div>
-      </nav>
+      </nav >
     </>
   );
 };
+
+
 
 export default MobileNav;
