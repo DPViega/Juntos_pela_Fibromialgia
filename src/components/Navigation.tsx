@@ -66,7 +66,7 @@ const Navigation = () => {
     >
       <div className="container mx-auto px-4 flex justify-between items-center relative gap-4">
         {/* Logo Section */}
-        <div className="flex-shrink-0 w-[240px]">
+        <div className="flex-shrink-0">
           <div
             onClick={() => {
               if (location.pathname !== "/") navigate("/");
@@ -101,9 +101,9 @@ const Navigation = () => {
         </ul>
 
         {/* User Controls & Theme */}
-        <div className="flex items-center justify-end gap-2 w-[240px]">
+        <div className="flex items-center justify-end gap-2 shrink-0">
           {user ? (
-            <div className={`flex items-center gap-2 px-3 py-1 rounded-full ${showSolidNav ? "bg-muted/50" : "bg-white/10 backdrop-blur-sm"}`}>
+            <div className="flex items-center gap-2 px-2 py-1 bg-transparent">
               {isAdmin && (
                 <button
                   onClick={() => navigate("/admin")}
@@ -128,7 +128,7 @@ const Navigation = () => {
                 ) : (
                   <User className="w-4 h-4" />
                 )}
-                <span className="hidden xl:inline">{user.username || "Perfil"}</span>
+                <span className="hidden lg:inline truncate max-w-[100px] whitespace-nowrap">{user.username || "Perfil"}</span>
               </button>
 
               <div className={`h-4 w-px ${showSolidNav ? "bg-border" : "bg-white/20"}`} />
