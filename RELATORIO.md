@@ -185,3 +185,13 @@ A casa está pronta para receber visitas! 🏠✨
 - **Proteção de Privacidade (Username)**: Para proteger os e-mails dos usuários de serem vistos publicamente, implementamos o campo `username` (Nome de Usuário) para todas as contas.
 - **Identidade Visual (Avatar Upload)**: Criamos a integração de fotos de perfil com o Supabase Storage. O card da página "Minha Conta" agora renderiza a foto (com botão de editar) feita via upload pra nuvem.
 - **Navegação Dinâmica (Mobile & Desktop)**: Todos os painéis de topo e laterais (`Navigation.tsx` e `MobileNav.tsx`) foram atualizados para priorizar a foto customizada (`avatar_url`) e o `username` de cada membro. Se a pessoa recém criou a conta, exibe seu e-mail ou ícone padrão de forma inteligente.
+
+---
+
+## 📅 2026-02-27 23:10
+
+### Título: Reestruturação do Layout do Cabeçalho e Navegação
+**Subtítulo:** Correção de sobreposição visual na barra de topo.
+
+- **Prevenção de Sobreposição (Header/Nav)**: O logotipo da aplicação, que ficava posicionado sobre o banner de imagens (`Header.tsx`), apresentava sobreposição e conflito visual com os itens de menu na barra de navegação principal em formato monitor (versão Desktop). O código foi reestruturado para que o Logotipo passe a integrar o container da `Navigation.tsx` ordenadamente lado-a-lado com os demais botões quando a tela entrar no _breakpoint_ `lg`. Isto resolveu o problema de tapar a frase "O que é?" das telas de usuários em notebooks/desktops.
+- No formato celular e tablet (Mobile), o Logo continuou posicionado em evidência (com transparência e `backdrop-blur`) sobre os slides da página usando a nova classe `lg:hidden`, preservando a já consolidada estética do App.

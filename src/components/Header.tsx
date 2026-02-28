@@ -45,7 +45,7 @@ const Header = () => {
   return (
     <header className="relative overflow-hidden">
       {/* Logo Section */}
-      <div className="absolute top-4 left-4 z-20 flex items-center gap-2 md:gap-3 bg-background/90 backdrop-blur-sm p-2 md:p-3 rounded-lg">
+      <div className="absolute top-4 left-4 z-20 flex items-center gap-2 md:gap-3 bg-background/90 backdrop-blur-sm p-2 md:p-3 rounded-lg lg:hidden">
         <FibromyalgiaRibbon className="w-10 h-12 md:w-12 md:h-14" />
         <div>
           <h1 className="text-lg md:text-xl font-semibold text-foreground">Fibromialgia</h1>
@@ -109,8 +109,8 @@ const Header = () => {
               key={index}
               onClick={() => setCurrentSlide(index)}
               className={`w-2 h-2 rounded-full transition-all ${index === currentSlide
-                  ? "w-8 bg-background"
-                  : "bg-background/50"
+                ? "w-8 bg-background"
+                : "bg-background/50"
                 }`}
               aria-label={`Ir para slide ${index + 1}`}
             />

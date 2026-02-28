@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import ThemeToggle from "./ThemeToggle";
 import { useAuth } from "../context/AuthContext";
 import { LogOut, LayoutGrid, User } from "lucide-react";
+import FibromyalgiaRibbon from "./FibromyalgiaRibbon";
 
 const Navigation = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -63,15 +64,34 @@ const Navigation = () => {
         : "bg-transparent py-6"
         }`}
     >
-      <div className="container mx-auto px-4 flex justify-center items-center relative">
-        <ul className="flex flex-wrap justify-center gap-2 md:gap-6">
+      <div className="container mx-auto px-4 flex justify-between items-center relative gap-4">
+        {/* Logo Section */}
+        <div className="flex-shrink-0 w-[240px]">
+          <div
+            onClick={() => {
+              if (location.pathname !== "/") navigate("/");
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }}
+            className={`cursor-pointer inline-flex items-center gap-2 md:gap-3 transition-all ${!showSolidNav ? "bg-background/90 backdrop-blur-sm p-2 rounded-lg" : ""
+              }`}
+          >
+            <FibromyalgiaRibbon className="w-8 h-10 md:w-10 md:h-12" />
+            <div>
+              <h1 className="text-base md:text-lg font-semibold text-foreground">Fibromialgia</h1>
+              <p className="text-[10px] md:text-xs text-muted-foreground hidden xl:block">Conscientização e Apoio</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Navigation Items */}
+        <ul className="flex flex-wrap justify-center flex-1 gap-2 lg:gap-4">
           {navItems.map((item) => (
             <li key={item.id}>
               <button
                 onClick={() => handleNavClick(item.id, item.isRoute)}
-                className={`px-4 py-2 rounded-full font-medium transition-all duration-300 ${showSolidNav
+                className={`px-3 xl:px-4 py-2 rounded-full font-medium transition-all duration-300 text-sm xl:text-base whitespace-nowrap ${showSolidNav
                   ? "text-foreground hover:bg-primary/10 hover:text-primary"
-                  : "text-white/90 hover:text-white hover:bg-white/20" // Assuming Home Hero is dark
+                  : "text-white/90 hover:text-white hover:bg-white/20"
                   }`}
               >
                 {item.label}
@@ -80,8 +100,8 @@ const Navigation = () => {
           ))}
         </ul>
 
-        {/* User Controls */}
-        <div className="flex items-center gap-2 ml-4">
+        {/* User Controls & Theme */}
+        <div className="flex items-center justify-end gap-2 w-[240px]">
           {user ? (
             <div className={`flex items-center gap-2 px-3 py-1 rounded-full ${showSolidNav ? "bg-muted/50" : "bg-white/10 backdrop-blur-sm"}`}>
               {isAdmin && (
@@ -108,7 +128,7 @@ const Navigation = () => {
                 ) : (
                   <User className="w-4 h-4" />
                 )}
-                <span className="hidden md:inline">{user.username || "Perfil"}</span>
+                <span className="hidden xl:inline">{user.username || "Perfil"}</span>
               </button>
 
               <div className={`h-4 w-px ${showSolidNav ? "bg-border" : "bg-white/20"}`} />
@@ -123,7 +143,7 @@ const Navigation = () => {
           ) : (
             <button
               onClick={() => navigate("/login")}
-              className={`ml-2 px-4 py-1.5 rounded-full font-medium text-sm transition-all duration-300 ${showSolidNav
+              className={`px-4 py-1.5 rounded-full font-medium text-sm transition-all duration-300 whitespace-nowrap ${showSolidNav
                 ? "bg-primary text-primary-foreground hover:bg-primary/90"
                 : "bg-white/20 text-white hover:bg-white/30 backdrop-blur-sm"
                 }`}
@@ -131,12 +151,11 @@ const Navigation = () => {
               Entrar
             </button>
           )}
-        </div>
 
-        <div className="absolute right-4 scale-75 flex items-center gap-2">
-          <ThemeToggle />
+          <div className="scale-75 flex items-center shrink-0">
+            <ThemeToggle />
+          </div>
         </div>
-
       </div>
     </nav>
   );
