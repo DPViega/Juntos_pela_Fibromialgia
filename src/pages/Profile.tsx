@@ -10,6 +10,7 @@ import { Mail, Lock, User, Loader2, Save, Camera } from "lucide-react";
 import Navigation from "../components/Navigation";
 import MobileNav from "../components/MobileNav";
 import Footer from "../components/Footer";
+import { ImageCropperModal } from "../components/ImageCropperModal";
 
 export default function Profile() {
     const { user } = useAuth();
@@ -19,6 +20,8 @@ export default function Profile() {
     const [confirmPassword, setConfirmPassword] = useState("");
     const [username, setUsername] = useState(user?.username || "");
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const [cropModalOpen, setCropModalOpen] = useState(false);
+    const [selectedImageSrc, setSelectedImageSrc] = useState<string | null>(null);
 
     useEffect(() => {
         if (user?.username) setUsername(user.username);
@@ -83,23 +86,39 @@ export default function Profile() {
         }
     };
 
-    const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleAvatarSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file || !user) return;
 
-        if (file.size > 2 * 1024 * 1024) {
-            toast.error("A imagem deve ter no máximo 2MB.");
+        if (file.size > 5 * 1024 * 1024) { // Increased client-size check temporary for original file
+            toast.error("A imagem deve ter no máximo 5MB para o corte inicial.");
             return;
         }
 
-        const toastId = toast.loading("Enviando foto...");
+        const reader = new FileReader();
+        reader.addEventListener("load", () => {
+            setSelectedImageSrc(reader.result?.toString() || "");
+            setCropModalOpen(true);
+        });
+        reader.readAsDataURL(file);
+
+        // Reset input to allow choosing the same file again
+        if (fileInputRef.current) {
+            fileInputRef.current.value = "";
+        }
+    };
+
+    const handleCropComplete = async (croppedFile: File) => {
+        if (!user) return;
+
+        setCropModalOpen(false);
+        const toastId = toast.loading("Enviando foto recortada...");
         try {
-            const fileExt = file.name.split('.').pop();
-            const filePath = `${user.id}-${Math.random()}.${fileExt}`;
+            const filePath = `${user.id}-${Math.random()}.jpeg`;
 
             const { error: uploadError } = await supabase.storage
                 .from('avatars')
-                .upload(filePath, file, { upsert: true });
+                .upload(filePath, croppedFile, { upsert: true, contentType: "image/jpeg" });
 
             if (uploadError) throw uploadError;
 
@@ -119,7 +138,7 @@ export default function Profile() {
             setTimeout(() => window.location.reload(), 1500);
         } catch (error: any) {
             toast.dismiss(toastId);
-            toast.error("Erro ao atualizar foto (A permissão do bucket foi configurada?): " + error.message);
+            toast.error("Erro ao enviar foto: " + error.message);
         }
     };
 
@@ -152,7 +171,7 @@ export default function Profile() {
                                 accept="image/*"
                                 className="hidden"
                                 ref={fileInputRef}
-                                onChange={handleAvatarUpload}
+                                onChange={handleAvatarSelected}
                             />
                         </div>
                         <div className="text-center md:text-left">
@@ -283,6 +302,13 @@ export default function Profile() {
                     </div>
                 </div>
             </main>
+
+            <ImageCropperModal
+                isOpen={cropModalOpen}
+                onClose={() => setCropModalOpen(false)}
+                imageSrc={selectedImageSrc}
+                onCropComplete={handleCropComplete}
+            />
 
             <Footer />
         </div>

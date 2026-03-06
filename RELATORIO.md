@@ -206,3 +206,14 @@ A casa está pronta para receber visitas! 🏠✨
 
 - **Proteção de Rota (AuthenticatedRoute)**: Criada uma nova regra (`AuthenticatedRoute`) que exige exclusivamente que o usuário esteja logado. Isso resolveu o bug onde membros comuns eram tratados como penetras e "chutados" de volta à página inicial quando tentavam acessar seus próprios perfis, devido à configuração acidental da tela "Meu Perfil" dentro de uma zona de proteção exclusiva para cargos de `admin` (`ProtectedRoute`).
 - **Página 'Minha Conta' (Profile.tsx)**: Agora todo e qualquer usuário da comunidade que possuir login consegue acessar a área de opções da conta para visualizar foto de avatar, gerenciar a própria imagem, nome de usuário, endereço de e-mail e realizar manutenções de segurança como troca de senhas pelo Painel.
+
+---
+
+## 📅 2026-03-06 12:28
+
+### Título: Sistema Mágico de Recorte de Avatar (Crop Image)
+**Subtítulo:** Ferramenta interativa de zoom e recorte durante a troca de foto de perfil.
+
+- **Inteligência de Envio**: Ao selecionar uma foto nova para o Avatar, a imagem não é mais enviada cegamente para o servidor. Antes disso, uma sobreposição de edição (`ImageCropperModal.tsx`) é carregada.
+- **Micro-ferramentas**: Dentro desse Painel, o usuário recebe a interface visual de uma "lupa/círculo" para definir qual parte exata da foto ele quer. Com suporte a "arrastar para reposicionar" e um **Slider (Zoom)** permitindo aproximar e enquadrar rostos com perfeição.
+- **Corte a Laser (`cropImage.ts`)**: Quando o usuário clica em "Salvar", um motor de pintura em `canvas` corta agressivamente o conteúdo inútil e renderiza a parte escolhida em arquivo leve `.jpeg`, mandando pro Supabase apenas a porção final da imagem ajustada!
