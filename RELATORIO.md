@@ -196,3 +196,13 @@ A casa está pronta para receber visitas! 🏠✨
 - **Prevenção de Sobreposição (Header/Nav)**: O logotipo da aplicação, que ficava posicionado sobre o banner de imagens (`Header.tsx`), apresentava sobreposição e conflito visual com os itens de menu na barra de navegação principal em formato monitor (versão Desktop). O código foi reestruturado para que o Logotipo passe a integrar o container da `Navigation.tsx` ordenadamente lado-a-lado com os demais botões quando a tela entrar no _breakpoint_ `lg`. Isto resolveu o problema de tapar a frase "O que é?" das telas de usuários em notebooks/desktops.
 - No formato celular e tablet (Mobile), o Logo continuou posicionado em evidência (com transparência e `backdrop-blur`) sobre os slides da página usando a nova classe `lg:hidden`, preservando a já consolidada estética do App.
 - **Refinamento do Menu de Usuário**: A pílula arredondada (`pill`) com botões de perfil (Painel Admin, Perfil, Logout) que possuía fundo sólido foi atualizada para um fundo transparente minimalista. Além disso, o layout dos botões adotou um contêiner flexível sem largura fixa e o "Nome de Usuário" passou a ser truncado automaticamente com `ellipsis` limitando-se a 100 pixels. Esta alteração resolve definitivamente qualquer quebra de linha visual que engordasse a barra de navegação principal e impedia a visibilidade de botões laterais (como os do tema claro/escuro).
+
+---
+
+## 📅 2026-03-06 12:20
+
+### Título: Correção da Rota de Perfil e Autenticação Comum
+**Subtítulo:** Criação de camada de autenticação para proteger áreas pessoais de membros sem cargos administrativos.
+
+- **Proteção de Rota (AuthenticatedRoute)**: Criada uma nova regra (`AuthenticatedRoute`) que exige exclusivamente que o usuário esteja logado. Isso resolveu o bug onde membros comuns eram tratados como penetras e "chutados" de volta à página inicial quando tentavam acessar seus próprios perfis, devido à configuração acidental da tela "Meu Perfil" dentro de uma zona de proteção exclusiva para cargos de `admin` (`ProtectedRoute`).
+- **Página 'Minha Conta' (Profile.tsx)**: Agora todo e qualquer usuário da comunidade que possuir login consegue acessar a área de opções da conta para visualizar foto de avatar, gerenciar a própria imagem, nome de usuário, endereço de e-mail e realizar manutenções de segurança como troca de senhas pelo Painel.

@@ -16,6 +16,7 @@ import AIAssistant from "./pages/admin/AIAssistant";
 import EditPost from "./pages/admin/EditPost";
 import { AuthProvider } from "./context/AuthContext";
 import { ProtectedRoute } from "./components/Admin/ProtectedRoute";
+import { AuthenticatedRoute } from "./components/AuthenticatedRoute";
 
 const queryClient = new QueryClient();
 
@@ -32,13 +33,17 @@ const App = () => (
             <Route path="/blog" element={<BlogIndex />} />
             <Route path="/blog/:slug" element={<BlogPost />} />
 
+            {/* Rotas de Usuário Autenticado */}
+            <Route element={<AuthenticatedRoute />}>
+              <Route path="/profile" element={<Profile />} />
+            </Route>
+
             {/* Rotas Administrativas Protegidas */}
             <Route element={<ProtectedRoute />}>
               <Route path="/admin" element={<Dashboard />} />
               <Route path="/admin/posts/new" element={<CreatePost />} />
               <Route path="/admin/posts/edit/:id" element={<EditPost />} />
               <Route path="/admin/ai-assistant" element={<AIAssistant />} />
-              <Route path="/profile" element={<Profile />} />
               {/* Outras rotas de admin virão aqui */}
             </Route>
 
